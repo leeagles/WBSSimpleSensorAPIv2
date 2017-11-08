@@ -1,11 +1,11 @@
 <?php
    header("Content-Type:application/json");
    $qry = filter_input(INPUT_GET, 'qry');
-   if (!empty($qry) && $qry == "a")
+   if (!empty($qry))
    {
 		include_once("../dblib/db_lib.inc");
 		$sensordb = new sensor_db();
-		$data = $sensordb->get_sensor_data();
+		$data = $sensordb->get_sensor_data($qry);
 		
 		if (empty($data))
 			deliver_response(200, "data not found", NULL);

@@ -17,7 +17,7 @@ class sensor_db
 		This function will perform a PDO query
 		and return an array based on the query it receives.
 	*/
-    public function tbl_query_all($sql)
+    private function tbl_query_all($sql)
 	{
 		if ($this->debug==1)
 			echo "dbapi: $sql";
@@ -42,7 +42,7 @@ class sensor_db
 		and return one value based on the query it receives.
 	*/
 	
-	public function tbl_query_one($sql)
+	private function tbl_query_one($sql)
 	{
 		if ($this->debug==1)
 			echo "dbapi: $sql";
@@ -64,7 +64,7 @@ class sensor_db
 		it does not return any data.
 		in a future solution, it should return status.
 	*/  
-    public function tbl_insert($sql)
+    private function tbl_insert($sql)
 	{
 		if ($this->debug==1)
 			echo "dbapi: $sql";
@@ -85,7 +85,7 @@ class sensor_db
 		it does not return any data.
 		in a future solution, it should return status.
 	*/
-    public function tbl_update($sql)
+    private function tbl_update($sql)
 	{
 		if ($this->debug==1)
 			echo "dbapi: $sql";
@@ -104,19 +104,7 @@ class sensor_db
 	/* END OF GENERIC DB TABLE PROCESSING FUNCTIONS */
 	/*----------------------------------------------*/
 	
-	/* ----------------------------------------------------------------
-	   function: get_sensors()
-	   data: none
-			 
-	   Responsible for getting sensor data from remote XML if changed
-	   returns: n/a
-	   ---------------------------------------------------------------- */
-	private function get_sensors()
-	{	
-		$count=0;
-		$sql = "SELECT * from sensors";
-		$this->tbl_query_all($sql);
-	}
+
 	
 	
 	/* ----------------------------------------------------------------
@@ -164,10 +152,28 @@ class sensor_db
 		}
 	}
  
-  
-	public function get_sensor_data()
+  	/* ----------------------------------------------------------------
+	   function: get_sensors()
+	   data: none
+			 
+	   Responsible for getting sensor data 
+	   returns: n/a
+	   ---------------------------------------------------------------- */
+	// class private method to get sensor data
+	private function get_sensors($sid)
+	{	
+		if ($sid>=1)
+			$sql = "SELECT * from sensors WHERE sID = $sid";
+		else
+			$sql = "SELECT * from sensors";
+		$this->tbl_query_all($sql);
+	}
+	
+	
+	//  method for obtaining results.
+	public function get_sensor_data($sid)
     {
-		$this->get_sensors();
+		$this->get_sensors($sid);
 		return $this->results;	
     }
 	

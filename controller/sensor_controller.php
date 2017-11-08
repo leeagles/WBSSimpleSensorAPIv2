@@ -1,6 +1,4 @@
 <?php	
-$loc  = filter_input(INPUT_GET, "loc");
-$loc = "a";
 function route($url)
 {
 	$wclient = curl_init($url);
@@ -8,18 +6,31 @@ function route($url)
 	$response = curl_exec($wclient);
 	$result = json_decode($response);
 	$sensor_data = $result->data;	
-	//print_r($sensor_data);
+//	print_r($sensor_data);
 	return $sensor_data;	
 }
+
+$sub = (filter_input(INPUT_GET, "submitall"));
+if ((isset($sub) && $sub == "GetAll"))
+	$sid = -1;
+else
+	$sid  = filter_input(INPUT_GET, "sid");
 	
 /* connect to web api to collect data */
-if (!empty($loc) && $loc == "a")
+if (!empty($sid))
 {
-	$url = "http://localhost:8090/model/webapi.php?qry=$loc";
+	$url = "http://localhost:8090/WAPIv2/model/webapi.php?qry=$sid";
+//echo "<p>".$url."</p>";
 	$data = route($url);
 	
 	include_once("../view/sensor_view.php");
 	
+	include_once("../view/form_view.php");
+}
+else
+	include_once("../view/form_view.php");
+
+// show chart data
 	$cdata = '{
 					  "cols": [
 							{"id":"","label":"sensors","pattern":"","type":"string"},
@@ -33,9 +44,4 @@ if (!empty($loc) && $loc == "a")
 						  ]
 					}';
 	include_once("../view/chart_view.php");
-	
-}
-
-
-
 ?>
